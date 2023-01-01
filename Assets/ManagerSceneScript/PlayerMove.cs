@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -18,6 +19,7 @@ public class PlayerMove : MonoBehaviour
     private float speed = 1f;
 
     private bool _isjump = false;
+    private bool _isjumping = false;
     private float maxJumpHeight = 0f;
     private void Start()
     {
@@ -37,35 +39,41 @@ public class PlayerMove : MonoBehaviour
 
     private void FixedUpdate()
     {
-        _PhysicsRay.origin = transform.position;
-        _ObserverRay.origin = transform.position + transform.rotation * _observerOffset;
+        if (!_isjumping)
+        {
+            _PhysicsRay.origin = transform.position;
+            _ObserverRay.origin = transform.position + transform.rotation * _observerOffset;
         
-        if (!Physics.Raycast(_PhysicsRay, out _raycastHit, 1f, layerMask))
-        {
-            // if (_raycastHit.distance > base_height + 1f)
-            // {
-            //     transform.position += new Vector3(0, Time.deltaTime * 0.2f, 0);
-            // }
-            // else if (_raycastHit.distance < base_height - 1f)
-            // {
-            //     transform.position -= new Vector3(0, Time.deltaTime * 0.2f, 0);
-            // }
-            transform.position -= new Vector3(0, Time.deltaTime * 0.5f, 0);
-        }
-        else
-        {
-            if (_isjump)
+            if (!Physics.Raycast(_PhysicsRay, out _raycastHit, 1f, layerMask))
             {
-                _isjump = false;
-                maxJumpHeight = transform.position.y + 10f;
-                StartCoroutine(JumpCoroutine());
+                // if (_raycastHit.distance > base_height + 1f)
+                // {
+                //     transform.position += new Vector3(0, Time.deltaTime * 0.2f, 0);
+                // }
+                // else if (_raycastHit.distance < base_height - 1f)
+                // {
+                //     transform.position -= new Vector3(0, Time.deltaTime * 0.2f, 0);
+                // }
+                transform.position -= new Vector3(0, Time.deltaTime * 0.5f, 0);
+            }
+            else
+            {
+                if (_isjump)
+                {
+                    _isjump = false;
+                    _isjumping = true;
+                    maxJumpHeight = transform.position.y + 10f;
+                    Debug.Log(maxJumpHeight);
+                    StartCoroutine(JumpCoroutine());
+                }
+            }
+            if(Physics.Raycast(_ObserverRay, out _observerRaycastHit, 10f, layerMask))
+            {
+                if(_raycastHit.point.y != _observerRaycastHit.point.y)
+                    transform.rotation = Quaternion.LookRotation(_observerRaycastHit.point - _raycastHit.point);
             }
         }
-        if(Physics.Raycast(_ObserverRay, out _observerRaycastHit, 10f, layerMask))
-        {
-            if(_raycastHit.point.y != _observerRaycastHit.point.y)
-                transform.rotation = Quaternion.LookRotation(_observerRaycastHit.point - _raycastHit.point);
-        }
+        
     }
 
     private void PlayerInputPhysicsEventClassification()
@@ -117,12 +125,31 @@ public class PlayerMove : MonoBehaviour
 
     IEnumerator JumpCoroutine()
     {
-        transform.position += new Vector3(0, 0.5f, 0);
+        Debug.Log("증가시작");
+        Invoke("IncreaseJump", Time.deltaTime * 0.5f);
         yield return new WaitUntil(() => transform.position.y > maxJumpHeight);
         
-        transform.position -= new Vector3(0, 0.5f, 0);
+        CancelInvoke("IncreaseJump");
+        Debug.Log("하강시작");
+        Invoke("DecreaseJump", Time.deltaTime * 0.5f);
+
         //yield return new WaitUntil(() => Physics.Raycast(_PhysicsRay, out _raycastHit, 1f, layerMask));
-        yield return new WaitUntil(() => _raycastHit.distance < 1f);
+        yield return new WaitUntil(() => _raycastHit.distance <= 1f);
+        CancelInvoke("DecreaseJump");
+        Debug.Log("하강완료");
+        _isjumping = false;
+    }
+
+    private void IncreaseJump()
+    {
+        Debug.Log("증가");
+        transform.position += new Vector3(0, 0.5f, 0);
+    }
+
+    private void DecreaseJump()
+    {
+        Debug.Log("하강");
+        transform.position += new Vector3(0, 0.5f, 0);
     }
     private void OnDrawGizmos()
     {
