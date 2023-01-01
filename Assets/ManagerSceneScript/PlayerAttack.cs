@@ -21,7 +21,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void PlayerInputNormalEventClassification()
     {
-        if (Input.GetKeyDown((KeyCode.Space)))
+        if (Input.GetKeyDown((KeyCode.Mouse0)))
         {
             Fire();
         }

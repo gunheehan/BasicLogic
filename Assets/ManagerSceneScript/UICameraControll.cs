@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class UICameraControll : MonoBehaviour
 {
-    public CameraFollow _CameraFollow;
+    [HideInInspector] public CameraFollow _CameraFollow;
     
     [SerializeField] private Button Btn_ChangeAngle;
     [SerializeField] private Vector3 nearOffset;
