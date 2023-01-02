@@ -19,7 +19,7 @@ public class PlayerMove : MonoBehaviour
     private float speed = 1f;
 
     private bool _isjump = false;
-    private bool _isjumping = false;
+    private bool _isdecreaseJump = false;
     private float maxJumpHeight = 0f;
     private void Start()
     {
@@ -39,41 +39,26 @@ public class PlayerMove : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!_isjumping)
+        if (!_isjump)
         {
             _PhysicsRay.origin = transform.position;
             _ObserverRay.origin = transform.position + transform.rotation * _observerOffset;
         
             if (!Physics.Raycast(_PhysicsRay, out _raycastHit, 1f, layerMask))
             {
-                // if (_raycastHit.distance > base_height + 1f)
-                // {
-                //     transform.position += new Vector3(0, Time.deltaTime * 0.2f, 0);
-                // }
-                // else if (_raycastHit.distance < base_height - 1f)
-                // {
-                //     transform.position -= new Vector3(0, Time.deltaTime * 0.2f, 0);
-                // }
                 transform.position -= new Vector3(0, Time.deltaTime * 0.5f, 0);
             }
-            else
-            {
-                if (_isjump)
-                {
-                    _isjump = false;
-                    _isjumping = true;
-                    maxJumpHeight = transform.position.y + 10f;
-                    Debug.Log(maxJumpHeight);
-                    StartCoroutine(JumpCoroutine());
-                }
-            }
+            
             if(Physics.Raycast(_ObserverRay, out _observerRaycastHit, 10f, layerMask))
             {
                 if(_raycastHit.point.y != _observerRaycastHit.point.y)
                     transform.rotation = Quaternion.LookRotation(_observerRaycastHit.point - _raycastHit.point);
             }
         }
-        
+        else
+        {
+            Jump(_isdecreaseJump);
+        }
     }
 
     private void PlayerInputPhysicsEventClassification()
@@ -109,8 +94,13 @@ public class PlayerMove : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Space))
         {
-            if(!_isjump)
+            if (!_isjump)
+            {
                 _isjump = true;
+                _isdecreaseJump = true;
+                maxJumpHeight = transform.position.y + 10f;
+                Debug.Log(maxJumpHeight);
+            }
         }
     }
     private void MoveVector(Vector3 forward)
@@ -122,35 +112,29 @@ public class PlayerMove : MonoBehaviour
     {
         transform.Rotate(0, _angle, 0);
     }
-
-    IEnumerator JumpCoroutine()
+    
+    private void Jump(bool _increase)
     {
-        Debug.Log("증가시작");
-        Invoke("IncreaseJump", Time.deltaTime * 0.5f);
-        yield return new WaitUntil(() => transform.position.y > maxJumpHeight);
-        
-        CancelInvoke("IncreaseJump");
-        Debug.Log("하강시작");
-        Invoke("DecreaseJump", Time.deltaTime * 0.5f);
+        if (_increase)
+        {
+            Debug.Log("증가");
+            transform.position += new Vector3(0, 0.5f, 0);
 
-        //yield return new WaitUntil(() => Physics.Raycast(_PhysicsRay, out _raycastHit, 1f, layerMask));
-        yield return new WaitUntil(() => _raycastHit.distance <= 1f);
-        CancelInvoke("DecreaseJump");
-        Debug.Log("하강완료");
-        _isjumping = false;
+            if (transform.position.y > maxJumpHeight)
+                _isdecreaseJump = false;
+        }
+        else
+        {
+            Debug.Log("하강");
+            transform.position -= new Vector3(0, 0.5f, 0);
+            if (Physics.Raycast(_ObserverRay, out _observerRaycastHit, 1f, layerMask))
+            {
+                if (_raycastHit.distance <= 1f)
+                    _isjump = false;
+            }
+        }
     }
 
-    private void IncreaseJump()
-    {
-        Debug.Log("증가");
-        transform.position += new Vector3(0, 0.5f, 0);
-    }
-
-    private void DecreaseJump()
-    {
-        Debug.Log("하강");
-        transform.position += new Vector3(0, 0.5f, 0);
-    }
     private void OnDrawGizmos()
     {
         Debug.DrawRay(_PhysicsRay.origin,_PhysicsRay.direction*10f,Color.red);
