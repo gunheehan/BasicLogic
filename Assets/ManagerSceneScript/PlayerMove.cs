@@ -58,6 +58,12 @@ public class PlayerMove : MonoBehaviour
         else
         {
             Jump(_isdecreaseJump);
+            _ObserverRay.origin = transform.position + transform.rotation * _observerOffset;
+            if (Physics.Raycast(_ObserverRay, out _observerRaycastHit, 1f, layerMask))
+            {
+                if (_raycastHit.distance <= 1f)
+                    _isjump = false;
+            }
         }
     }
 
@@ -118,7 +124,7 @@ public class PlayerMove : MonoBehaviour
         if (_increase)
         {
             Debug.Log("증가");
-            transform.position += new Vector3(0, 0.5f, 0);
+            transform.position += new Vector3(0, 0.2f, 0);
 
             if (transform.position.y > maxJumpHeight)
                 _isdecreaseJump = false;
@@ -126,12 +132,7 @@ public class PlayerMove : MonoBehaviour
         else
         {
             Debug.Log("하강");
-            transform.position -= new Vector3(0, 0.5f, 0);
-            if (Physics.Raycast(_ObserverRay, out _observerRaycastHit, 1f, layerMask))
-            {
-                if (_raycastHit.distance <= 1f)
-                    _isjump = false;
-            }
+            transform.position -= new Vector3(0, 0.2f, 0);
         }
     }
 
