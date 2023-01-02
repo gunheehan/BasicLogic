@@ -118,13 +118,17 @@ public class PlayerMove : MonoBehaviour
     {
         transform.Rotate(0, _angle, 0);
     }
+
+    private Vector3 velocity;
     
     private void Jump(bool _increase)
     {
         if (_increase)
         {
             Debug.Log("증가");
-            transform.position += new Vector3(0, 0.2f, 0);
+            //transform.position += new Vector3(0,  Time.deltaTime * 5f, 0);
+            transform.position =
+                Vector3.SmoothDamp(transform.position, new Vector3(transform.position.x, maxJumpHeight + 1, transform.position.z),ref velocity ,1f);
 
             if (transform.position.y > maxJumpHeight)
                 _isdecreaseJump = false;
@@ -132,7 +136,9 @@ public class PlayerMove : MonoBehaviour
         else
         {
             Debug.Log("하강");
-            transform.position -= new Vector3(0, 0.2f, 0);
+            //transform.position -= new Vector3(0, Time.deltaTime * 5f, 0);
+            transform.position =
+                Vector3.SmoothDamp(transform.position, new Vector3(transform.position.x, 0, transform.position.z),ref velocity ,1f);
         }
     }
 
