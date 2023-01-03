@@ -19,8 +19,9 @@ public class PlayerMove : MonoBehaviour
     private float speed = 1f;
 
     private bool _isjump = false;
-    private bool _isdecreaseJump = false;
     private float maxJumpHeight = 0f;
+
+    private const float gravity = -9.81f;
     private void Start()
     {
         _PhysicsRay = new Ray();
@@ -46,7 +47,8 @@ public class PlayerMove : MonoBehaviour
         
             if (!Physics.Raycast(_PhysicsRay, out _raycastHit, 1f, layerMask))
             {
-                transform.position -= new Vector3(0, Time.deltaTime * 0.5f, 0);
+                //transform.position -= new Vector3(0, Time.deltaTime * 0.5f, 0);
+                transform.position += new Vector3(0,  gravity * Time.fixedDeltaTime, 0);
             }
             
             if(Physics.Raycast(_ObserverRay, out _observerRaycastHit, 10f, layerMask))
@@ -57,13 +59,7 @@ public class PlayerMove : MonoBehaviour
         }
         else
         {
-            Jump(_isdecreaseJump);
-            _ObserverRay.origin = transform.position + transform.rotation * _observerOffset;
-            if (Physics.Raycast(_ObserverRay, out _observerRaycastHit, 1f, layerMask))
-            {
-                if (_raycastHit.distance <= 1f)
-                    _isjump = false;
-            }
+            Jump();
         }
     }
 
@@ -103,7 +99,6 @@ public class PlayerMove : MonoBehaviour
             if (!_isjump)
             {
                 _isjump = true;
-                _isdecreaseJump = true;
                 maxJumpHeight = transform.position.y + 10f;
                 Debug.Log(maxJumpHeight);
             }
@@ -121,25 +116,12 @@ public class PlayerMove : MonoBehaviour
 
     private Vector3 velocity;
     
-    private void Jump(bool _increase)
+    private void Jump()
     {
-        if (_increase)
-        {
-            Debug.Log("증가");
-            //transform.position += new Vector3(0,  Time.deltaTime * 5f, 0);
-            transform.position =
-                Vector3.SmoothDamp(transform.position, new Vector3(transform.position.x, maxJumpHeight + 1, transform.position.z),ref velocity ,1f);
-
+        Debug.Log("증가");
+            transform.position -= new Vector3(0,  gravity * Time.fixedDeltaTime, 0);
             if (transform.position.y > maxJumpHeight)
-                _isdecreaseJump = false;
-        }
-        else
-        {
-            Debug.Log("하강");
-            //transform.position -= new Vector3(0, Time.deltaTime * 5f, 0);
-            transform.position =
-                Vector3.SmoothDamp(transform.position, new Vector3(transform.position.x, 0, transform.position.z),ref velocity ,1f);
-        }
+                _isjump = false;
     }
 
     private void OnDrawGizmos()
