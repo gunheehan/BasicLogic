@@ -47,11 +47,10 @@ public class PlayerMove : MonoBehaviour
         
             if (!Physics.Raycast(_PhysicsRay, out _raycastHit, 1f, layerMask))
             {
-                //transform.position -= new Vector3(0, Time.deltaTime * 0.5f, 0);
                 transform.position += new Vector3(0,  gravity * Time.fixedDeltaTime, 0);
             }
             
-            if(Physics.Raycast(_ObserverRay, out _observerRaycastHit, 10f, layerMask))
+            if(Physics.Raycast(_ObserverRay, out _observerRaycastHit, 1f, layerMask))
             {
                 if(_raycastHit.point.y != _observerRaycastHit.point.y)
                     transform.rotation = Quaternion.LookRotation(_observerRaycastHit.point - _raycastHit.point);
@@ -114,19 +113,17 @@ public class PlayerMove : MonoBehaviour
         transform.Rotate(0, _angle, 0);
     }
 
-    private Vector3 velocity;
-    
     private void Jump()
     {
         Debug.Log("증가");
-            transform.position -= new Vector3(0,  gravity * Time.fixedDeltaTime, 0);
-            if (transform.position.y > maxJumpHeight)
-                _isjump = false;
+        transform.position -= new Vector3(0, gravity * Time.fixedDeltaTime, 0);
+        if (transform.position.y > maxJumpHeight)
+            _isjump = false;
     }
 
     private void OnDrawGizmos()
     {
-        Debug.DrawRay(_PhysicsRay.origin,_PhysicsRay.direction*10f,Color.red);
-        Debug.DrawRay(_ObserverRay.origin,_PhysicsRay.direction*10f,Color.blue);
+        Debug.DrawRay(_PhysicsRay.origin,_PhysicsRay.direction*1f,Color.red);
+        Debug.DrawRay(_ObserverRay.origin,_PhysicsRay.direction*1f,Color.blue);
     }
 }
