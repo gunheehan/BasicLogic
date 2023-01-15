@@ -69,34 +69,29 @@ public class LongPressClickRotateCamera : MonoBehaviour
         {
             if (_currentPressDirection == LongPressDirection.Left)
             {
-                Debug.Log("좌로 회전");
                 RotateHorizontalAngle(-1f);
             }
             else if(_currentPressDirection == LongPressDirection.Right)
             {
-                Debug.Log("우로 회전");
                 RotateHorizontalAngle(1f);
             }
             else if(_currentPressDirection == LongPressDirection.Up)
             {
-                Debug.Log("위로 회전");
                 RotateVerticalAngle(-1f);
             }
             else if(_currentPressDirection == LongPressDirection.Dowm)
             {
-                Debug.Log("아래로 회전");
                 RotateVerticalAngle(1f);
             }
             else if(_currentPressDirection == LongPressDirection.Reset)
             {
-                Debug.Log("리셋");
                 RotateReset();
             }
         }
     }
     private void RotateHorizontalAngle(float _angle)
     {
-        _CameraTransform.Rotate(0, _angle, 0);
+        _CameraTransform.transform.RotateAround(_CameraTransform.position, Vector3.up, _angle);
     }
     private void RotateVerticalAngle(float _angle)
     {
