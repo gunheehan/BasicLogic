@@ -29,12 +29,11 @@ public class PlayerMove : MonoBehaviour
         _ObserverRay = new Ray();
         _ObserverRay.direction = Vector3.down;
         
-        layerMask = 1 << LayerMask.NameToLayer("Plane");
+        layerMask = 1 << LayerMask.NameToLayer("Plane") | LayerMask.NameToLayer("Obstacle");
         _collider = gameObject.GetComponent<CapsuleCollider>();
         base_height = _collider.height / 2;
         base_radius = _collider.radius / 2;
         _observerOffset = new Vector3(0, 0, base_radius);
-        Debug.Log("사이즈 : " + base_height);
         PlayerInputManager.Instance.KeyboardPhysicsInputEvent += PlayerInputPhysicsEventClassification;
     }
 
@@ -45,12 +44,12 @@ public class PlayerMove : MonoBehaviour
             _PhysicsRay.origin = transform.position;
             _ObserverRay.origin = transform.position + transform.rotation * _observerOffset;
         
-            if (!Physics.Raycast(_PhysicsRay, out _raycastHit, 1f, layerMask))
+            if (!Physics.Raycast(_PhysicsRay, out _raycastHit, 0.5f, layerMask))
             {
                 transform.position += new Vector3(0,  gravity * Time.fixedDeltaTime, 0);
             }
             
-            if(Physics.Raycast(_ObserverRay, out _observerRaycastHit, 1f, layerMask))
+            if(Physics.Raycast(_ObserverRay, out _observerRaycastHit, 0.5f, layerMask))
             {
                 if(_raycastHit.point.y != _observerRaycastHit.point.y)
                     transform.rotation = Quaternion.LookRotation(_observerRaycastHit.point - _raycastHit.point);
@@ -98,7 +97,7 @@ public class PlayerMove : MonoBehaviour
             if (!_isjump)
             {
                 _isjump = true;
-                maxJumpHeight = transform.position.y + 10f;
+                maxJumpHeight = transform.position.y + 3f;
                 Debug.Log(maxJumpHeight);
             }
         }
@@ -115,7 +114,6 @@ public class PlayerMove : MonoBehaviour
 
     private void Jump()
     {
-        Debug.Log("증가");
         transform.position -= new Vector3(0, gravity * Time.fixedDeltaTime, 0);
         if (transform.position.y > maxJumpHeight)
             _isjump = false;
