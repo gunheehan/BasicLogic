@@ -6,9 +6,10 @@ public class PlayerController : MonoBehaviour
 {
     private bool isinit = false;
     private Camera _mainCamera;
-    private PlayerMove _playermove = null;
+    private PlayerMove2 _playermove2 = null;
     private PlayerAttack _playerAttack = null;
     private CameraFollow _cameraFollow = null;
+
     [SerializeField] private UICameraControll _uiCameraControll = null;
     
     // Start is called before the first frame update
@@ -23,7 +24,7 @@ public class PlayerController : MonoBehaviour
             return;
         _mainCamera = Camera.main;
 
-        _playermove = this.gameObject.AddComponent<PlayerMove>();
+        _playermove2 = this.gameObject.AddComponent<PlayerMove2>();
         _playerAttack = this.gameObject.AddComponent<PlayerAttack>();
         _cameraFollow = _mainCamera.gameObject.AddComponent<CameraFollow>();
         _cameraFollow.target = this.gameObject.transform;

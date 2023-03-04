@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 
 public class JoyStick : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    [SerializeField] private CharacterMove characterMove;
+     public PlayerMove2 characterMove = null;
     [SerializeField] private RectTransform lever;
     [SerializeField] private RectTransform rectTransform;
 
@@ -18,10 +18,14 @@ public class JoyStick : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
     private void Update()
     {
-        if (isDrag)
+        if (isDrag && characterMove != null)
             InputController();
     }
 
+    public void SetPlayer(PlayerMove2 player)
+    {
+        characterMove = player;
+    }
     public void OnBeginDrag(PointerEventData eventData)
     {
         ControllJoyStickLever(eventData);
