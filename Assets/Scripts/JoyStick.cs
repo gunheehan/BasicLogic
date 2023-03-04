@@ -22,7 +22,7 @@ public class JoyStick : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
             InputController();
     }
 
-    public void SetPlayer(CharacterMove player)
+    public void SetCharacter(CharacterMove player)
     {
         characterMove = player;
     }
