@@ -2,15 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class CharacterController : MonoBehaviour
 {
     private bool isinit = false;
     private Camera _mainCamera;
-    private PlayerMove playerMove = null;
+    private CharacterMove characterMove = null;
     private PlayerAttack _playerAttack = null;
     private CameraFollow _cameraFollow = null;
-
-    [SerializeField] private UICameraControll _uiCameraControll = null;
     
     // Start is called before the first frame update
     void Start()
@@ -24,10 +22,9 @@ public class PlayerController : MonoBehaviour
             return;
         _mainCamera = Camera.main;
 
-        playerMove = this.gameObject.AddComponent<PlayerMove>();
+        characterMove = this.gameObject.AddComponent<CharacterMove>();
         _playerAttack = this.gameObject.AddComponent<PlayerAttack>();
         _cameraFollow = _mainCamera.gameObject.AddComponent<CameraFollow>();
         _cameraFollow.target = this.gameObject.transform;
-        _uiCameraControll._CameraFollow = _cameraFollow;
     }
 }
