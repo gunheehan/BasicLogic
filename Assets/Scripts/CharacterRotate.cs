@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,11 @@ public class CharacterRotate : MonoBehaviour, IBeginDragHandler, IDragHandler
     float xAngleTemp;
     float yAngleTemp;
     [SerializeField] private Transform camara;
+
+    private void Start()
+    {
+        camara = Camera.main.transform;
+    }
 
     public void OnBeginDrag(PointerEventData eventData)
     {

@@ -12,7 +12,7 @@ public class CharacterMove : MonoBehaviour
         GameObject stickObject = Resources.Load<GameObject>("Prefabs/JoyStick");
         JoyStick joyStick = Instantiate(stickObject).GetComponent<JoyStick>();
         joyStick.SetCharacter(this);
-
+        
         characterBody = GetComponent<Transform>();
     }
 

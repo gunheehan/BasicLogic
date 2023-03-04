@@ -54,7 +54,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebb5bae88f4ed44a7945592cc87b8e97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterMove: {fileID: 0}
   lever: {fileID: 6429137952374890335}
   rectTransform: {fileID: 6429137953794614059}
   leverRange: 120
