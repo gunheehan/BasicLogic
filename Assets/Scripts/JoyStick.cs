@@ -14,18 +14,18 @@ public class JoyStick : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     [SerializeField] private float leverRange;
 
     private Vector2 inputDirection;
-    private bool isInput;
+    private bool isDrag;
 
     private void Update()
     {
-        if (isInput)
+        if (isDrag)
             InputController();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         ControllJoyStickLever(eventData);
-        isInput = true;
+        isDrag = true;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -36,7 +36,7 @@ public class JoyStick : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     public void OnEndDrag(PointerEventData eventData)
     {
         lever.anchoredPosition = Vector2.zero;
-        isInput = false;
+        isDrag = false;
         characterMove.Move(Vector2.zero);
     }
 
