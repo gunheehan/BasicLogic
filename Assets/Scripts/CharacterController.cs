@@ -8,6 +8,7 @@ public class CharacterController : MonoBehaviour
     private Camera _mainCamera;
     private CharacterMove characterMove = null;
     private PlayerAttack _playerAttack = null;
+    private CharaterFire CharaterFire = null;
     private CameraFollow _cameraFollow = null;
     
     // Start is called before the first frame update
@@ -24,6 +25,7 @@ public class CharacterController : MonoBehaviour
 
         characterMove = this.gameObject.AddComponent<CharacterMove>();
         _playerAttack = this.gameObject.AddComponent<PlayerAttack>();
+        CharaterFire = this.gameObject.AddComponent<CharaterFire>();
         _cameraFollow = _mainCamera.gameObject.AddComponent<CameraFollow>();
         _cameraFollow.target = this.gameObject.transform;
     }

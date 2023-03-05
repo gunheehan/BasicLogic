@@ -27,6 +27,7 @@ public class CharacterMove : MonoBehaviour
             Vector3 moveDirection = lookForward * moveInput.y + lookRight * moveInput.x;
 
             characterBody.forward = lookForward;
+            Debug.Log(moveDirection.z + " / " + moveDirection.x);
             transform.position += moveDirection * Time.deltaTime * 5f;
         }
     }
