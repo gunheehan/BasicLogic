@@ -23,7 +23,7 @@ public class CharacterController : MonoBehaviour
             return;
         _mainCamera = Camera.main;
 
-        characterMove = this.gameObject.AddComponent<CharacterMove>();
+        //characterMove = this.gameObject.AddComponent<CharacterMove>();
         //_playerAttack = this.gameObject.AddComponent<PlayerAttack>();
         //CharaterFire = this.gameObject.AddComponent<CharaterFire>();
         _cameraFollow = _mainCamera.gameObject.AddComponent<CameraFollow>();

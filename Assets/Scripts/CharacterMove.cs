@@ -5,7 +5,16 @@ using UnityEngine;
 
 public class CharacterMove : MonoBehaviour
 {
+    [SerializeField] private Transform targetObject;
     private Transform characterBody;
+
+    private Camera mainCamera;
+
+    private void LateUpdate()
+    {
+        if(mainCamera != null)
+            targetObject.LookAt(mainCamera.transform);
+    }
 
     private void Start()
     {
@@ -14,6 +23,7 @@ public class CharacterMove : MonoBehaviour
         joyStick.SetCharacter(this);
         
         characterBody = GetComponent<Transform>();
+        mainCamera = Camera.main;
     }
 
     public void Move(Vector2 inputDirection)
