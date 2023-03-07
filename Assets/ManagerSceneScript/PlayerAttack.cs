@@ -41,10 +41,7 @@ public class PlayerAttack : MonoBehaviour
         for (int i = 0; i < magazine; i++) 
         {
             BulletPrefab _bullet = AttackManager.Instance.GetBullet();
-            _bullet.SetBullet(transform.position, transform.rotation, () =>
-            {
-                AttackManager.Instance.ReturnPoolBullet(_bullet);
-            }, _bounds, null);
+            _bullet.SetBullet(transform.position, transform.rotation,AttackManager.Instance.ReturnPoolBullet, _bounds, null);
             yield return new WaitForSeconds(0.2f);
         }
         _isshoot = false;

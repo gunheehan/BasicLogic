@@ -9,7 +9,7 @@ public class BulletPrefab : MonoBehaviour
 {
     private Vector3 forward;
     private float speed = 20f;
-    private Action returnObjectPoolAction;
+    private Action<BulletPrefab> returnObjectPoolAction;
     private Bounds bounds;
 
     private Vector3[] endPoint;
@@ -34,7 +34,7 @@ public class BulletPrefab : MonoBehaviour
         layerMask = 1 << LayerMask.NameToLayer("Obstacle");
     }
 
-    private void Getobstacle()
+    private void GetObstacle()
     {
         _pivotRay.origin = transform.position + transform.rotation * _rayOffset;
         if (Physics.Raycast(_pivotRay, out _raycastHit, 100f, layerMask))
@@ -51,10 +51,10 @@ public class BulletPrefab : MonoBehaviour
         ismove = true;
     }
 
-    private void OnEnable()
-    {
-        Getobstacle();
-    }
+    // private void OnEnable()
+    // {
+    //     GetObstacle();
+    // }
 
     private void OnDisable()
     {
@@ -69,7 +69,7 @@ public class BulletPrefab : MonoBehaviour
             transform.position += forward * Time.deltaTime * speed;
     }
 
-    public void SetBullet(Vector3 startPosition, Quaternion rotation, Action ReturnpoolAction, Bounds Bounds, Action<GameObject> ObstacleRecycle)
+    public void SetBullet(Vector3 startPosition, Quaternion rotation, Action<BulletPrefab> ReturnpoolAction, Bounds Bounds, Action<GameObject> ObstacleRecycle)
     {
         this.transform.position = startPosition;
         this.transform.rotation = rotation;
@@ -78,6 +78,7 @@ public class BulletPrefab : MonoBehaviour
         bounds = Bounds;
         objectRecycle = ObstacleRecycle;
         gameObject.SetActive(true);
+        GetObstacle();
     }
 
     IEnumerator BulletMove()
@@ -85,7 +86,7 @@ public class BulletPrefab : MonoBehaviour
         yield return new WaitUntil(() =>
             bounds.Contains(this.gameObject.transform.position) == false
         );
-        returnObjectPoolAction.Invoke();
+        returnObjectPoolAction.Invoke(this);
         gameObject.SetActive(false);
     }
 
@@ -99,7 +100,7 @@ public class BulletPrefab : MonoBehaviour
             elapsedTime += Time.fixedDeltaTime;
             yield return null;
         }
-        returnObjectPoolAction.Invoke();
+        returnObjectPoolAction.Invoke(this);
         objectRecycle.Invoke(ObjObstacle);
         gameObject.SetActive(false);
     }

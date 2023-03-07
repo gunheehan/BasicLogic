@@ -6,70 +6,66 @@ using UnityEngine.UI;
 
 public class CharaterFire : MonoBehaviour
 {
-    [SerializeField] private Button Btn_Fire;
     [SerializeField] private Transform transformFirePoint;
     private BulletPrefab bulletPrefab;
     private Stack<BulletPrefab> pool_bullet;
-    private int magazine = 10;
+
+    private UIFireController uiFireController;
+    private int limitMagazine = 10;
+    private int magazine;
     
     public Bounds _bounds = new Bounds();
-    
-    private Ray _pivotRay;
-    private RaycastHit _raycastHit;
-    private int layerMask;
-    private Vector3 _rayOffset;
-    
+
+    private string magazineTextForm = "{0} / {1}";
+
     void Start()
     {
         init();
-        
-        Btn_Fire.onClick.AddListener(OnClickShoot);
     }
 
     private void init()
     {
-        _rayOffset = new Vector3(0, 0, 5);
-        _pivotRay = new Ray();
-        _pivotRay.direction = Vector3.down;
-        layerMask = 1 << LayerMask.NameToLayer("Plane");
-        RayJudgment();
-
+        _bounds.center = Vector3.zero;
+        _bounds.size = new Vector3(200, 5f, 200);
         bulletPrefab = Resources.Load<BulletPrefab>("Prefabs/BulletPrefab");
+        uiFireController = Resources.Load<UIFireController>("Prefabs/UiFireController");
+        uiFireController = Instantiate(uiFireController);
+        uiFireController.FireInputEvent += OnClickShoot;
         SetBulletPool();
-    }
-
-    private void RayJudgment()
-    {
-        _pivotRay.origin = transform.position + transform.rotation * _rayOffset;
-        if (Physics.Raycast(_pivotRay, out _raycastHit, 30f, layerMask))
-        {
-            _bounds.center = Vector3.zero;
-            _bounds.size = new Vector3(_raycastHit.transform.localScale.x * 10, 5f, _raycastHit.transform.localScale.z * 10);
-        }
     }
 
     private void SetBulletPool()
     {
         pool_bullet = new Stack<BulletPrefab>();
 
-        for (int i = 0; i < magazine; i++)
+        for (int i = 0; i < limitMagazine; i++)
         {
             BulletPrefab newBullet = Instantiate(bulletPrefab);
             pool_bullet.Push(newBullet);
         }
+
+        magazine = limitMagazine;
+        uiFireController.SetMagazineText(string.Format(magazineTextForm,magazine,limitMagazine));
     }
 
     public void OnClickShoot()
     {
-        BulletPrefab _bullet = GetBullet();
+        BulletPrefab bullet = GetBullet();
 
-        if (_bullet == null)
+        if (bullet == null)
             return;
-        
-        _bullet.SetBullet(transformFirePoint.position,transformFirePoint.rotation, () =>
-        {
-            pool_bullet.Push(_bullet);
-        },_bounds,ObstacleRecycle);
+        magazine--;
+
+        bullet.SetBullet(transformFirePoint.position, transformFirePoint.rotation, BulletPushEvent, _bounds,
+            ObstacleRecycle);
+        uiFireController.SetMagazineText(string.Format(magazineTextForm,magazine,limitMagazine));
+    }
+
+    private void BulletPushEvent(BulletPrefab bullet)
+    {
+        magazine++;
+        uiFireController.SetMagazineText(string.Format(magazineTextForm,magazine,limitMagazine));
+        pool_bullet.Push(bullet);
     }
     
     private BulletPrefab GetBullet()
