@@ -11,7 +11,7 @@ public class MoveAroundTest : MonoBehaviour
 
     [SerializeField] private Transform target;
 
-    private float distanceFromTarget = 3.0f;
+    private float distanceFromTarget = 5.0f;
 
     // Update is called once per frame
     void Update()
