@@ -18,9 +18,14 @@ public class CharaterFire : MonoBehaviour
 
     private string magazineTextForm = "{0} / {1}";
 
-    void Start()
+    private void Start()
     {
         init();
+    }
+
+    private void OnDestroy()
+    {
+        uiFireController.FireInputEvent -= OnClickShoot;
     }
 
     private void init()
