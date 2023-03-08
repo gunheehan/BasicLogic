@@ -7,22 +7,15 @@ using UnityEngine;
 
 public class BulletPrefab : MonoBehaviour
 {
-    private Vector3 forward;
-    private float speed = 20f;
-    private Action<BulletPrefab> returnObjectPoolAction;
-    private Bounds bounds;
-
-    private Vector3[] endPoint;
-    
-    RaycastHit hit;
-
-    private int layerMask;
-
     private Action<GameObject> objectRecycle;
-    private float distance;
-    private float time;
+    private Action<BulletPrefab> returnObjectPoolAction;
     
-    private bool ismove = false;
+    private Vector3 forward;
+    private Bounds bounds;
+    RaycastHit hit;
+    
+    private int layerMask;
+    private float speed = 20f;
 
     private void Start()
     {
@@ -32,7 +25,6 @@ public class BulletPrefab : MonoBehaviour
     private void OnDisable()
     {
         returnObjectPoolAction = null;
-        ismove = false;
         objectRecycle = null;
     }
 
