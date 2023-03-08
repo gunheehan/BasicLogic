@@ -5,30 +5,32 @@ using UnityEngine;
 public class PetController : MonoBehaviour
 {
     private Vector3 offset;
+    private Vector3 targetPosition;
     public Transform target;
 
-    // Start is called before the first frame update
+    private float targetMaxDistance = 3f;
+    private float distance;
+
     void Start()
     {
-        offset = new Vector3(2, 0, -2f);
+        offset = new Vector3(1, 0, -3f);
     }
 
-    // Update is called once per frame
-    void LateUpdate()
+    void Update()
     {
-        // transform.position = Vector3.Lerp(transform.position, target.position + target.rotation * offset, 0.02f);
-        // RotateObjectToTargetForward();
+        distance = Vector3.Distance(target.position, transform.position);
+        targetPosition = target.position + offset;
+
+        if (distance > targetMaxDistance || target.position.z > targetPosition.z)
+        {
+            transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * 10f);
+        }
+        //RotateObjectToTargetForward();
     }
 
     private void RotateObjectToTargetForward()
     {
-        Vector3 delta = transform.position - target.position;
-
-        float angle = Vector3.Angle(target.forward, delta);
-
-        if (Vector3.Cross(target.forward, delta).y < 0)
-            angle = -angle;
-
-        transform.rotation = transform.rotation * Quaternion.Euler(0, angle, 0);
+        float angle = Vector3.SignedAngle(transform.forward, target.position - transform.position, Vector3.up);
+        transform.Rotate(Vector3.up, angle);
     }
 }

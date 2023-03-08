@@ -9,6 +9,7 @@ public class CharacterMove : MonoBehaviour
     private Transform characterBody;
 
     private Camera mainCamera;
+    private PetController petController;
 
     private void LateUpdate()
     {
@@ -21,6 +22,10 @@ public class CharacterMove : MonoBehaviour
         GameObject stickObject = Resources.Load<GameObject>("Prefabs/JoyStick");
         JoyStick joyStick = Instantiate(stickObject).GetComponent<JoyStick>();
         joyStick.SetCharacter(this);
+
+        GameObject petObject = Resources.Load<GameObject>("Prefabs/Pet");
+        petController = Instantiate(petObject).GetComponent<PetController>();
+        petController.target = transform;
         
         characterBody = GetComponent<Transform>();
         mainCamera = Camera.main;

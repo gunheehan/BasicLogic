@@ -18,9 +18,6 @@ public class StartInit : MonoBehaviour
         startObject = Resources.Load<GameObject>("Prefabs/ObstacleInitController");
         Instantiate(startObject);
 
-        startObject = Resources.Load<GameObject>("Prefabs/Pet");
-        Instantiate(startObject);
-
         Camera.main.gameObject.AddComponent<MoveAroundTest>();
     }
 }
